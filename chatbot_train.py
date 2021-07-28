@@ -59,3 +59,13 @@ print(len(words), ' Words')
 
 pickle.dump(words, open('words.pkl', 'wb'))
 pickle.dump(classes, open('classes.pkl', 'wb'))
+
+############### Training and Testing Data ###############
+
+# Create Training data
+training = []
+
+# Create an empty array for the output
+output_empty = [0] * len(classes)
+
+# 
