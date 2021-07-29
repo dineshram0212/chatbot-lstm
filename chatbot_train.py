@@ -1,8 +1,10 @@
 ############### Imports ###############
 
+from keras import activations
 import nltk
 from nltk import data
 from nltk.stem import WordNetLemmatizer
+from tensorflow.keras import optimizers
 lemmatizer = WordNetLemmatizer()
 import json
 import pickle
@@ -10,7 +12,7 @@ import pickle
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
-from tensorflow.keras.optimizers import SGD
+# from keras.optimizers import Adam
 import random
 
 ############### Creating Varibles ###############
@@ -94,3 +96,31 @@ training = np.array(training)
 x_train = list(training[:,0])
 y_train = list(training[:,1])
 print("--Training Data Created--")
+
+############### Training the Model ###############
+
+# Create 3 Layered Model
+# First Layer - 128 Neurons
+# Second Layer - 64  Neurons
+# Third Layer - NO. of Neurons = No. of intents to predict output (softmax)
+model = Sequential()
+
+model.add(Dense(128, input_shape=(len(x_train[0]),), activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(64, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(len(y_train[0]), activation='softmax'))
+
+# Compile Model
+# Stochastic gradient descent with Nesterov accelerated gradient 
+# gives good results for this model.
+
+# adam1 = Adam(lr=0.01, decay=le-6, momentum=0.9, nesterov=True)
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Fitting and Saving Model
+hist = model.fit(np.array(x_train), np.array(y_train), epochs=200, batch_size=5, verbose=1)
+
+model.save('chatbot_model.h5', hist)
+
